@@ -19,6 +19,7 @@ class NeuralLayer(ABC):
 
     def applyPropagationChanges(self,input):
         self.updateWeights(input)
+        self.nextLayer.applyPropagationChanges;
 
     @abstractmethod
     def backPropagation(self):

@@ -27,10 +27,10 @@ class ConvolutionalLayer(NeuralLayer):
         for index,kernel in enumerate(self.kernels):
             #Se crea el output y los deltas con 0
             self.deltas.append(np.zeros((resultHeight,resultWidth)))
-            self.outputFeatureMap[index] = np.zeros((resultHeight,resultWidth))
-            for channel in channels:
+            self.outputFeatureMap[:,:,index] = np.zeros((resultHeight,resultWidth))
+            for channel in range(channels):
                 if channels!= 1:
-                    self.outputFeatureMap[:,:,index] = np.add(self.outputFeatureMap[:,:,index],(signal.convolve2d(inputs[:,:,channels],np.rot90(kernel,2), 'valid')))
+                    self.outputFeatureMap[:,:,index] = np.add(self.outputFeatureMap[:,:,index],(signal.convolve2d(inputs[:,:,channel],np.rot90(kernel,2), 'valid')))
                 else:
                     self.outputFeatureMap[:,:,index] = (signal.convolve2d(inputs,np.rot90(kernel,2), 'valid'))
         self.nextLayer.forwardPropagation(self.outputFeatureMap)

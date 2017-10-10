@@ -16,24 +16,25 @@ class PoolingLayer(NeuralLayer):
             channels = 1
         inputHeight = input.shape[0]
         inputWidth = input.shape[1]
-        outputHeight = inputHeight/self.windowSize
-        outputWidth = inputWidth/self.windowSize
+        outputHeight = inputHeight//self.windowSize
+        outputWidth = inputWidth//self.windowSize
         self.deltas = []
+        self.deltaDirection = []
         self.outputFeatureMap = np.zeros(shape=(outputHeight,outputWidth,channels))
         #ojo aca
         for channel in range(channels):
             positionX =0
             positionY = 0
-            self.deltas.append(np.zeros(outputHeight,outputWidth))
-            self.markNeurons.append(np.zeros(inputHeight,inputWidth))
+            self.deltas.append(np.zeros((outputHeight,outputWidth)))
+            self.markNeurons.append(np.zeros((inputHeight,inputWidth)))
             self.deltaDirection.append(np.zeros(shape=(outputHeight,outputWidth,2)))
             for h in range(outputHeight):
                 for w in range(outputWidth):
                     for index in range(self.windowSize):
                         window = input[index: index + positionY + 1,index: index + positionX + 1,channel]
-                        i, j = np.unravel_index(window.argmax(), window.shape)
-                        self.deltaDirection[h][w] = [i,j]
-                        self.markNeurons[i,j] = 1
+                        i, j= np.unravel_index(window.argmax(), window.shape)
+                        self.deltaDirection[channel][h][w] = [i,j]
+                        self.markNeurons[channel][i][j] = 1
                         self.outputFeatureMap[h,w,channel] = window[i,j]
             positionX += outputHeight
             positionY += outputWidth
@@ -48,7 +49,10 @@ class PoolingLayer(NeuralLayer):
             deltaHeight,deltaWidth  = self.deltas[channel].shape
             for dh in range(deltaHeight):
                 for dw in range(deltaWidth):
-                    [h,w] = self.deltaDirection[dh][dw]
+                    print(self.deltaDirection[channel].shape)
+                    h,w = self.deltaDirection[channel][dh][dw][:]
+                    h =int(h)
+                    w = int(w)
                     self.previousLayer.deltas[channel][h][w] = self.deltas[channel][dh][dw]
             self.previousLayer.deltas = np.multiply(self.previousLayer.deltas[channel],self.markNeurons)
 

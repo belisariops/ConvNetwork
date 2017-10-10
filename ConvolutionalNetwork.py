@@ -31,4 +31,7 @@ class ConvolutionalNetwork:
 
     def guess(self,input):
         self.inputLayer.forwardPropagation(input)
-        self.outputLayer.getOutput()
+        return self.outputLayer.getOutput()
+
+    def train(self):
+        self.outputLayer.backPropagation([0,0,0,0,0,0,0,0,0,1])

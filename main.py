@@ -20,8 +20,11 @@ import matplotlib.pyplot as plt
 # # plt.show()
 # # j=np.zeros(shape=(2,2,3))
 from ConvolutionalNetwork import ConvolutionalNetwork
-
+a = np.zeros(shape= (4,4,2))
+print(a[1][3][:])
 net = ConvolutionalNetwork(10)
 net.buildNetwork()
 face = misc.imread('00001.tif')
 x =net.guess(face)
+net.train()
+print(x)

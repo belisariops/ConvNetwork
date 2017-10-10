@@ -20,7 +20,13 @@ class SigmoidNeuron(AbstractNeuron):
         for i in range(len(self.weights)):
             z = z + self.weights[i] * inputs[i]
         z = z + self.bias
-        self.output = self.activation_function(z)
+        try:
+            self.output = self.activation_function(z)
+        except OverflowError:
+            if (z > 0):
+                self.output = 0
+            else:
+                self.output = 1
         return self.output
 
     def setRandomParameters(self):

@@ -10,6 +10,7 @@ class FullyConnectedLayer(AbstractNeuralLayer):
         self.buildRandomLayer(numNeurons)
         self.setLearningRate(0.01)
         self.isBuilded = True
+        self.setRandomWeights(numNeurons,-3,3)
 
     def forwardPropagation(self,input):
         if (not self.isBuilded):

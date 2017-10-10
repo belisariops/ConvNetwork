@@ -54,7 +54,7 @@ class AbstractNeuralLayer(ABC):
 
     def connect(self,otherLayer):
         self.next_layer = otherLayer
-        otherLayer.previousLayer = self
+        otherLayer.previous_layer = self
 
     def setRandomWeights(self,number_of_weights,min_value,max_value):
         for neuron in self.neuron_array:

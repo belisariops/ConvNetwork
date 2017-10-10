@@ -1,7 +1,14 @@
 from AbstractNeuralLayer import AbstractNeuralLayer
+from SigmoidNeuron import SigmoidNeuron
 
 
 class OutputLayer(AbstractNeuralLayer):
+    def __init__(self,outputClasses):
+        super().__init__()
+        self.initializeWeights = False
+        self.buildRandomLayer(outputClasses)
+        self.setLearningRate(0.01)
+
     def backPropagation(self, expected_output):
         index = 0
         for neuron in self.neuron_array:
@@ -10,7 +17,13 @@ class OutputLayer(AbstractNeuralLayer):
             index += 1
         self.previous_layer.backPropagation(expected_output)
 
+    def setWeights(self,numWeights):
+        self.setRandomWeights(numWeights,-2,2)
+
     def forwardPropagation(self, inputs):
+        if (not self.initializeWeights):
+            self.setWeights(len(inputs))
+
         self.outputs = []
         for neuron in self.neuron_array:
             neuron.output = neuron.getOutput(inputs)

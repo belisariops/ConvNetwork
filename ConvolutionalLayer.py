@@ -8,7 +8,7 @@ class ConvolutionalLayer(NeuralLayer):
     def __init__(self,kernelSize,numKernels):
         super().__init__()
         for i in range(numKernels):
-            self.kernels.append(np.random.random(kernelSize,kernelSize))
+            self.kernels.append(np.random.random((kernelSize,kernelSize)))
 
 
     def forwardPropagation(self,inputs):
@@ -19,15 +19,15 @@ class ConvolutionalLayer(NeuralLayer):
             channels =1
         inputHeigt = inputs.shape[0]
         inputWidth = inputs.shape[1]
-        (kernelHeigt, kernelWidth) = self.kernel[0].shape
+        (kernelHeigt, kernelWidth) = self.kernels[0].shape
         resultHeight = inputHeigt - kernelHeigt + 1
         resultWidth = inputWidth - kernelWidth + 1
         self.outputFeatureMap = np.zeros(shape=(resultHeight,resultWidth,len(self.kernels)))
         self.deltas =[]
         for index,kernel in enumerate(self.kernels):
             #Se crea el output y los deltas con 0
-            self.deltas.append(np.zeros(resultHeight,resultWidth))
-            self.outputFeatureMap[index] = np.zeros(resultHeight,resultWidth)
+            self.deltas.append(np.zeros((resultHeight,resultWidth)))
+            self.outputFeatureMap[index] = np.zeros((resultHeight,resultWidth))
             for channel in channels:
                 if channels!= 1:
                     self.outputFeatureMap[:,:,index] = np.add(self.outputFeatureMap[:,:,index],(signal.convolve2d(inputs[:,:,channels],np.rot90(kernel,2), 'valid')))

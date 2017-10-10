@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 class NeuralLayer(ABC):
-    def __init__(self, channels):
+    def __init__(self):
         self.outputFeatureMap = []
         self.kernels = []
         self.deltas = []
@@ -13,14 +13,17 @@ class NeuralLayer(ABC):
     def forwardPropagation(self,input):
         pass
 
-    @abstractmethod
     def updateWeights(self,input):
         pass
 
     def applyPropagationChanges(self,input):
         self.updateWeights(input)
-        self.nextLayer.applyPropagationChanges;
+        self.nextLayer.applyPropagationChanges(input)
 
     @abstractmethod
     def backPropagation(self):
         pass
+
+    def connect(self,layer):
+        self.nextLayer = layer
+        layer.previousLayer = self

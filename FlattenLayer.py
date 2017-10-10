@@ -6,6 +6,10 @@ class FlattenLayer(AbstractNeuralLayer):
     def __init__(self):
         super().__init__()
         self.isBuilded = False
+        self.thisShape = None
+        self.deltas = []
+        self.outputs = []
+
 
     def buildNeurons(self,numNeurons):
         self.buildRandomLayer(numNeurons)
@@ -13,6 +17,7 @@ class FlattenLayer(AbstractNeuralLayer):
         self.isBuilded = True
 
     def forwardPropagation(self,input):
+        self.thisShape = input.shape
         # Aplanar el input primero y usar una capa de perceptron multiple
         myInput = input.flatten()
         # Revisar caso en que la imagen es de un canal (blanco y negro)
@@ -28,12 +33,18 @@ class FlattenLayer(AbstractNeuralLayer):
 
         if (not self.isBuilded):
             self.buildNeurons(len(myInput))
-        outputs = []
+        self.outputs = []
         for neuron in self.neuron_array:
             neuron.setInputsList(myInput)
             neuron.output = neuron.getOutput(myInput)
-            outputs.append(neuron.output)
-        return self.next_layer.forwardPropagation(outputs)
+            self.outputs.append(neuron.output)
+        return self.next_layer.forwardPropagation(self.outputs)
 
-    def backPropagation(self):
-        self.previous_layer.deltas = self.deltas
+    def backPropagation(self,expected_output):
+        self.calculateDelta(expected_output)
+        self.deltas = np.zeros(len(self.neuron_array))
+        for index,neuron in enumerate(self.neuron_array):
+            self.deltas[index] = neuron.delta
+        self.previous_layer.deltas = np.reshape(self.deltas,self.thisShape)
+        self.previous_layer.backPropagation()
+

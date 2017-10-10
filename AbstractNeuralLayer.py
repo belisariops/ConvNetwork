@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.SigmoidNeuron import SigmoidNeuron
+from SigmoidNeuron import SigmoidNeuron
 
 
 class AbstractNeuralLayer(ABC):
@@ -10,6 +10,7 @@ class AbstractNeuralLayer(ABC):
             self.neuron_array = []
         self.next_layer = None
         self.previous_layer = None
+        self.outputs = []
 
     def buildRandomLayer(self, number_of_neurons):
         neuron = None
@@ -24,13 +25,13 @@ class AbstractNeuralLayer(ABC):
             neuron.setC(learning_rate)
         self.next_layer.setLearningRate(learning_rate)
 
-    def forwardPropagation(self,inputs):
+    def applyPropagationChanges(self,inputs):
         outputs = []
         for neuron in self.neuron_array:
             neuron.updateWeights(inputs)
             neuron.updateBias()
             outputs.append(neuron.output)
-        self.next_layer.forwardPropagation(outputs)
+        self.next_layer.applyPropagationChanges(outputs)
 
 
     def transferDerivative(self,output):
@@ -47,9 +48,13 @@ class AbstractNeuralLayer(ABC):
     def getNumberofNeurons(self):
         return len(self.neuron_array)
 
-    @abstractmethod
+
     def getOutputs(self,inputs):
         pass
+
+    def connect(self,otherLayer):
+        self.next_layer = otherLayer
+        otherLayer.previousLayer = self
 
     def setRandomWeights(self,number_of_weights,min_value,max_value):
         for neuron in self.neuron_array:

@@ -3,7 +3,7 @@ import numpy
 
 from math import exp
 
-from src.AbstractNeuron import AbstractNeuron
+from AbstractNeuron import AbstractNeuron
 
 
 class SigmoidNeuron(AbstractNeuron):

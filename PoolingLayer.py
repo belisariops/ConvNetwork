@@ -46,11 +46,12 @@ class PoolingLayer(NeuralLayer):
     def backPropagation(self):
         channels = len(self.deltas)
         for channel in range(channels):
+            print(self.deltas[channel].shape)
             deltaHeight,deltaWidth  = self.deltas[channel].shape
+            print(self.deltaDirection[0].shape)
             for dh in range(deltaHeight):
                 for dw in range(deltaWidth):
-                    print(self.deltaDirection[channel].shape)
-                    h,w = self.deltaDirection[channel][dh][dw][:]
+                    [h,w] = self.deltaDirection[channel][dh][dw][:]
                     h =int(h)
                     w = int(w)
                     self.previousLayer.deltas[channel][h][w] = self.deltas[channel][dh][dw]

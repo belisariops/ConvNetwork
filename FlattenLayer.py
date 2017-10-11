@@ -9,18 +9,19 @@ class FlattenLayer(AbstractNeuralLayer):
         self.thisShape = None
         self.deltas = []
         self.outputs = []
+        self.myInput = None
 
 
     def buildNeurons(self,numNeurons):
         self.buildRandomLayer(numNeurons)
-        self.setLearningRate(0.01)
+        # self.setLearningRate(0.01)
         self.isBuilded = True
         self.setRandomWeights(1,-2,2)
 
     def forwardPropagation(self,input):
         self.thisShape = input.shape
         # Aplanar el input primero y usar una capa de perceptron multiple
-        myInput = input.flatten()
+        self.myInput = input.flatten()
         # Revisar caso en que la imagen es de un canal (blanco y negro)
         try:
             channels = input.shape[2]
@@ -31,13 +32,15 @@ class FlattenLayer(AbstractNeuralLayer):
         self.deltas = []
         for channel in range(channels):
             self.deltas.append(np.zeros((inputHeight,inputWidth)))
-
         if (not self.isBuilded):
-            self.buildNeurons(len(myInput))
+            self.buildNeurons(len(self.myInput))
+        for neuron in self.neuron_array:
+            if len(neuron.weights) > 1:
+                print("aaaaaaaaaaaa")
         self.outputs = []
         for index,neuron in enumerate(self.neuron_array):
-            neuron.setInputsList(myInput[index])
-            neuron.output = neuron.getOutput([myInput[index]])
+            neuron.setInputsList(self.myInput[index])
+            neuron.output = neuron.getOutput([self.myInput[index]])
             self.outputs.append(neuron.output)
         return self.next_layer.forwardPropagation(self.outputs)
 
@@ -48,4 +51,12 @@ class FlattenLayer(AbstractNeuralLayer):
             self.deltas[index] = neuron.delta
         self.previousLayer.deltas = np.reshape(self.deltas,self.thisShape)
         self.previousLayer.backPropagation()
+
+    def applyPropagationChanges(self,inputs):
+        outputs = []
+        for index,neuron in enumerate(self.neuron_array):
+            neuron.updateWeightEscalarInput(self.myInput[index])
+            neuron.updateBias()
+            outputs.append(neuron.output)
+        self.next_layer.applyPropagationChanges(outputs)
 

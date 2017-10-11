@@ -4,6 +4,7 @@ from NeuralLayer import NeuralLayer
 class InputLayer(NeuralLayer):
     def __init__(self):
         # self.inputShape = inputShape
+        self.outputFeatureMap = None
         self.nextLayer = None
         self.input = None
 
@@ -11,8 +12,8 @@ class InputLayer(NeuralLayer):
         pass
 
     def forwardPropagation(self,input):
-        self.input = input
-        self.nextLayer.forwardPropagation(input)
+        self.outputFeatureMap = input
+        self.nextLayer.forwardPropagation(self.outputFeatureMap)
 
     def backPropagation(self):
         self.applyPropagationChanges(self.input)

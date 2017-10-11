@@ -8,7 +8,7 @@ class ConvolutionalLayer(NeuralLayer):
     def __init__(self,kernelSize,numKernels):
         super().__init__()
         for i in range(numKernels):
-            self.kernels.append(np.random.random((kernelSize,kernelSize)))
+            self.kernels.append(np.random.random((kernelSize,kernelSize))*4 - 1)
 
 
     def forwardPropagation(self,inputs):
@@ -36,14 +36,23 @@ class ConvolutionalLayer(NeuralLayer):
         self.nextLayer.forwardPropagation(self.outputFeatureMap)
 
     def updateWeights(self,inputs):
+        # Revisar caso en que la imagen es de un canal (blanco y negro)
+        try:
+            channels = inputs.shape[2]
+        except IndexError:
+            channels = 1
         for index,delta in enumerate(self.deltas):
-            for input in inputs:
-                self.kernels[index] = np.add(self.kernels[index],signal.convolve2d(input,np.rot90(delta,2),'valid'))
+            for channel in range(channels):
+                self.kernels[index] = np.add(self.kernels[index],signal.convolve2d(inputs[:,:,channel],np.rot90(delta,2),'valid'))
 
 
     def backPropagation(self):
-        for kIndex,kernel in enumerate(self.kernels):
-            for dIndex in range(len(self.previousLayer.deltas)):
-                self.previousLayer.deltas[dIndex] = np.add(self.previousLayer.deltas[dIndex],signal.convolve2d(np.rot90(kernel,2),self.deltas[kIndex],'full'))
-
+        try:
+            for kIndex,kernel in enumerate(self.kernels):
+                for dIndex in range(len(self.previousLayer.deltas)):
+                    self.previousLayer.deltas[dIndex] = np.add(self.previousLayer.deltas[dIndex],signal.convolve2d(np.rot90(kernel,2),self.deltas[kIndex],'full'))
+        #Case that previous layer is an InputLayer
+        except AttributeError:
+            self.previousLayer.backPropagation()
+        self.previousLayer.backPropagation()
 

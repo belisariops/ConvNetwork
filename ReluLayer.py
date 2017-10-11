@@ -16,4 +16,5 @@ class ReluLayer(NeuralLayer):
 
     def backPropagation(self):
         self.previousLayer.deltas = self.deltas
+        self.previousLayer.backPropagation()
 

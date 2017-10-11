@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class NeuralLayer(ABC):
     def __init__(self):
-        self.outputFeatureMap = []
+        self.outputFeatureMap = None
         self.kernels = []
         self.deltas = []
         self.inputFeatureMap = []
@@ -18,7 +18,7 @@ class NeuralLayer(ABC):
 
     def applyPropagationChanges(self,input):
         self.updateWeights(input)
-        self.nextLayer.applyPropagationChanges(input)
+        self.nextLayer.applyPropagationChanges(self.outputFeatureMap)
 
     @abstractmethod
     def backPropagation(self):

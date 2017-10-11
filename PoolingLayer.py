@@ -53,7 +53,7 @@ class PoolingLayer(NeuralLayer):
                     h =int(h)
                     w = int(w)
                     self.previousLayer.deltas[channel][h,w] = self.deltas[dh,dw,channel]
-            self.previousLayer.deltas = np.multiply(self.previousLayer.deltas[channel],self.markNeurons)
+            # self.previousLayer.deltas[channel] = np.multiply(self.previousLayer.deltas[channel],self.markNeurons)
 
         self.previousLayer.backPropagation()
 

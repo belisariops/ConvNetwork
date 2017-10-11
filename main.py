@@ -36,7 +36,7 @@ net.buildNetwork()
 # names = data_loader.load_class_names()
 # x = 13
 # print(names[classes[x]])
-net.train(1)
+net.train(2)
 net.plot_results()
 #
 # data = unpickle('cifar-10-batches-py/data_batch_1')

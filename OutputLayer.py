@@ -30,7 +30,7 @@ class OutputLayer(AbstractNeuralLayer):
             neuron.output = neuron.getOutput(inputs)
             self.outputs.append(neuron.output)
 
-    def applyChanges(self, inputs):
+    def applyPropagationChanges(self, inputs):
         for neuron in self.neuron_array:
             neuron.updateWeights(inputs)
             neuron.updateBias()

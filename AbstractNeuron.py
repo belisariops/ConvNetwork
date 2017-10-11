@@ -17,8 +17,6 @@ class AbstractNeuron(ABC):
     def setThreshold(self,threshold):
         self.threshold  = threshold
 
-    def setWeights(self, *weights):
-        self.weights = list(weights)
 
     def setInputs(self, *inputs):
         self.inputs = list(inputs)
@@ -28,10 +26,6 @@ class AbstractNeuron(ABC):
 
     def setInputsList(self,inputs):
         self.inputs = inputs
-
-
-    def setWeight(self,w):
-        self.weights.append(w)
 
     def setInput(self,i):
         self.inputs.append(i)
@@ -55,6 +49,9 @@ class AbstractNeuron(ABC):
     def updateWeights(self,inputs):
         for i in range (len(self.weights)):
             self.weights[i] += (self.C * self.delta * inputs[i])
+
+    def updateWeightEscalarInput(self,input):
+        self.weights[0] += (self.C * self.delta * input)
 
     def updateBias(self):
         self.bias += (self.C * self.delta)

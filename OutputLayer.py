@@ -19,6 +19,7 @@ class OutputLayer(AbstractNeuralLayer):
 
     def setWeights(self,numWeights):
         self.setRandomWeights(numWeights,-2,2)
+        self.initializeWeights = True
 
     def forwardPropagation(self, inputs):
         if (not self.initializeWeights):

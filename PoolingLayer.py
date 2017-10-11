@@ -33,8 +33,8 @@ class PoolingLayer(NeuralLayer):
                     for index in range(self.windowSize):
                         window = input[index: index + positionY + 1,index: index + positionX + 1,channel]
                         i, j= np.unravel_index(window.argmax(), window.shape)
-                        self.deltaDirection[channel][h][w] = [i,j]
-                        self.markNeurons[channel][i][j] = 1
+                        self.deltaDirection[channel][h,w,:] = [i,j]
+                        self.markNeurons[channel][i,j] = 1
                         self.outputFeatureMap[h,w,channel] = window[i,j]
             positionX += outputHeight
             positionY += outputWidth
@@ -44,17 +44,15 @@ class PoolingLayer(NeuralLayer):
         pass
 
     def backPropagation(self):
-        channels = len(self.deltas)
+        channels = self.deltas.shape[2]
         for channel in range(channels):
-            print(self.deltas[channel].shape)
-            deltaHeight,deltaWidth  = self.deltas[channel].shape
-            print(self.deltaDirection[0].shape)
+            deltaHeight,deltaWidth  = self.deltas[:,:,channel].shape
             for dh in range(deltaHeight):
                 for dw in range(deltaWidth):
-                    [h,w] = self.deltaDirection[channel][dh][dw][:]
+                    [h,w] = self.deltaDirection[channel][dh,dw,:]
                     h =int(h)
                     w = int(w)
-                    self.previousLayer.deltas[channel][h][w] = self.deltas[channel][dh][dw]
+                    self.previousLayer.deltas[channel][h,w] = self.deltas[dh,dw,channel]
             self.previousLayer.deltas = np.multiply(self.previousLayer.deltas[channel],self.markNeurons)
 
         self.previousLayer.backPropagation()

@@ -18,6 +18,7 @@ class SigmoidNeuron(AbstractNeuron):
     def getOutput(self, inputs):
         z = 0
         for i in range(len(self.weights)):
+            x =(inputs[i])
             z = z + self.weights[i] * inputs[i]
         z = z + self.bias
         try:

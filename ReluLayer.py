@@ -1,6 +1,7 @@
 from NeuralLayer import NeuralLayer
 import numpy as np
 
+
 class ReluLayer(NeuralLayer):
     def forwardPropagation(self,input):
         # Revisar caso en que la imagen es de un canal (blanco y negro)

@@ -23,17 +23,17 @@ class ConvolutionalNetwork:
 
     def buildNetwork(self):
         self.inputLayer = InputLayer()
-        convLayer = ConvolutionalLayer(4,30)
-        poolLayer = PoolingLayer(2)
+        convLayer = ConvolutionalLayer(4,10)
+        poolLayer = PoolingLayer(4)
         reluLayer = ReluLayer()
-        convLayer2 = ConvolutionalLayer(4,30)
-        pool2Layer = PoolingLayer(2)
+        # convLayer2 = ConvolutionalLayer(4,)
+        # pool2Layer = PoolingLayer(4)
         flattenLayer = FlattenLayer()
         self.outputLayer = OutputLayer(10)
         flattenLayer.connect(self.outputLayer)
-        pool2Layer.connect(flattenLayer)
-        convLayer2.connect(pool2Layer)
-        reluLayer.connect(convLayer2)
+        # pool2Layer.connect(flattenLayer)
+        # convLayer2.connect(pool2Layer)
+        reluLayer.connect(flattenLayer)
         poolLayer.connect(reluLayer)
         convLayer.connect(poolLayer)
         self.inputLayer.connect(convLayer)
@@ -48,31 +48,35 @@ class ConvolutionalNetwork:
     def train(self, numEpochs):
         images, classes = self.dataLoader.load_training_data()
         numImages = images.shape[0]
+        training_images, training_classes = self.dataLoader.load_test_data()
+        classes_names = self.dataLoader.load_class_names()
         self.error_plotX = []
         self.error_plotY = []
-        self.error = 0
         for i in range(numEpochs):
+            self.error = 0
             for index in range(numImages):
+                if index%100 == 0:
+                    print(index)
                 expected_output = np.zeros(10)
                 output = self.guess(images[index,:,:,:])
                 expected_output[classes[index]] = 1
                 self.backPropagate(expected_output)
                 self.error += (np.power(LA.norm(np.subtract(expected_output, output)), 2)/numImages)
+            print(self.error)
             self.error_plotX.append(i)
             self.error_plotY.append(self.error)
-            ratio = self.test_data()
+            ratio = self.test_data(training_images,training_classes,classes_names)
             self.precisionX.append(i)
             self.precisionY.append(ratio)
 
-    def test_data(self):
-        images, classes = self.dataLoader.load_training_data()
-        classes_names = self.dataLoader.load_class_names()
+    def test_data(self,images,classes ,classes_names):
         numImages = images.shape[0]
         asserts = 0
         for index in range(numImages):
             output = self.guess(images[index,:,:,:])
-            if (classes_names[np.argmax(output)]== classes[index]):
+            if (np.argmax(output)== classes[index]):
                 asserts +=1
+        print(asserts)
         return float(float(asserts)/float(numImages))
 
     def plot_results(self):

@@ -46,7 +46,7 @@ class CifarDataLoader:
         self.img_size = 32
         self.num_channels = 3 #(R,G,B)
         self.num_classes = 10
-        self.num_files = 5
+        self.num_files = 1
         self.images_per_file = 10000
         self.num_images_to_train = self.num_files * self.images_per_file
         self.data_path = "data/CIFAR-10/"

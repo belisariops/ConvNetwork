@@ -51,6 +51,7 @@ class ConvolutionalNetwork:
         self.outputLayer.backPropagation(expected_output)
 
     def train(self, numEpochs):
+        file = open('results.txt', 'w')
         images, classes = self.dataLoader.load_training_data()
         numImages = images.shape[0]
         training_images, training_classes = self.dataLoader.load_test_data()
@@ -59,26 +60,29 @@ class ConvolutionalNetwork:
         self.error_plotY = []
         for i in range(numEpochs):
             self.error = 0
+            print("Epoch {0}: training".format(i))
             for index in range(numImages):
-                if index%100 == 0:
-                    print(index)
                 expected_output = np.zeros(10)
                 output = self.guess(images[index,:,:,:])
                 expected_output[classes[index]] = 1
                 self.backPropagate(expected_output)
                 self.error += (np.power(LA.norm(np.subtract(expected_output, output)), 2)/numImages)
-            print(self.error)
             self.error_plotX.append(i)
             self.error_plotY.append(self.error)
+            print("Epoch {0}: test".format(i))
             ratio = self.test_data(training_images,training_classes,classes_names)
             self.precisionX.append(i)
             self.precisionY.append(ratio)
+            file.write("Epoch {0}:  precision={1}   error={2}".format(i,ratio,self.error))
+        file.close()
 
     def test_data(self,images,classes ,classes_names):
         numImages = images.shape[0]
         asserts = 0
         for index in range(numImages):
             output = self.guess(images[index,:,:,:])
+            if np.argmax(output) == classes[index]:
+                asserts += 1
         print(asserts)
         return float(float(asserts)/float(numImages))
 

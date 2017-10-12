@@ -5,13 +5,11 @@ import numpy as np
 class ReluLayer(NeuralLayer):
     def forwardPropagation(self,input):
         # Revisar caso en que la imagen es de un canal (blanco y negro)
-        channels = input.shape[2]
-        inputHeigth = input.shape[0]
-        inputWidth = input.shape[1]
+        input_heigth, input_width,channels = input.shape
         self.outputFeatureMap = input.clip(min=0)
         self.deltas = []
         for channel in range(channels):
-            self.deltas.append(np.zeros((inputHeigth,inputWidth)))
+            self.deltas.append(np.zeros((input_heigth,input_width)))
         self.nextLayer.forwardPropagation(self.outputFeatureMap)
 
     def backPropagation(self):

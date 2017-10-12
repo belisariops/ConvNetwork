@@ -47,10 +47,18 @@ class ConvolutionalLayer(NeuralLayer):
 
 
     def backPropagation(self):
+
+        # for kIndex,kernel in enumerate(self.kernels):
+        #     for dIndex in range(len(self.previousLayer.deltas)):
+        #         self.previousLayer.deltas[dIndex] = np.add(self.previousLayer.deltas[dIndex],signal.convolve2d(np.rot90(kernel,2),self.deltas[dIndex],'full'))
         try:
-            for kIndex,kernel in enumerate(self.kernels):
-                for dIndex in range(len(self.previousLayer.deltas)):
-                    self.previousLayer.deltas[dIndex] = np.add(self.previousLayer.deltas[dIndex],signal.convolve2d(np.rot90(kernel,2),self.deltas[kIndex],'full'))
+            for index,previous_delta in enumerate(self.previousLayer.deltas):
+                self.previousLayer.deltas[index] = np.zeros(previous_delta.shape)
+                for kernel_index,kernel in enumerate(self.kernels):
+                    error = signal.convolve2d(self.deltas[kernel_index],np.rot90(kernel))
+                    error = np.multiply(error,self.sigmoid(self.previousLayer.outputFeatureMap[:,:,index]))
+                    self.previousLayer.deltas[index] = np.add(self.previousLayer.deltas[index],error)
+        #print(self.previousLayer.deltas[0].shape)
         #Case that previous layer is an InputLayer
         except AttributeError:
             self.previousLayer.backPropagation()

@@ -1,6 +1,7 @@
 from CifarDataLoader import CifarDataLoader
 from ConvolutionalLayer import ConvolutionalLayer
 from FlattenLayer import FlattenLayer
+from FullyConnectedLayer import FullyConnectedLayer
 from InputLayer import InputLayer
 from OutputLayer import OutputLayer
 from PoolingLayer import PoolingLayer
@@ -23,17 +24,21 @@ class ConvolutionalNetwork:
 
     def buildNetwork(self):
         self.inputLayer = InputLayer()
-        convLayer = ConvolutionalLayer(4,10)
+        convLayer = ConvolutionalLayer(2,10)
         poolLayer = PoolingLayer(4)
         reluLayer = ReluLayer()
-        # convLayer2 = ConvolutionalLayer(4,)
-        # pool2Layer = PoolingLayer(4)
+        convLayer2 = ConvolutionalLayer(4,5)
+        pool2Layer = PoolingLayer(2)
         flattenLayer = FlattenLayer()
+        reluLayer2 = ReluLayer()
+        fullLayer = FullyConnectedLayer(20)
         self.outputLayer = OutputLayer(10)
-        flattenLayer.connect(self.outputLayer)
-        # pool2Layer.connect(flattenLayer)
-        # convLayer2.connect(pool2Layer)
-        reluLayer.connect(flattenLayer)
+        fullLayer.connect(self.outputLayer)
+        flattenLayer.connect(fullLayer)
+        reluLayer2.connect(flattenLayer)
+        pool2Layer.connect(reluLayer2)
+        convLayer2.connect(pool2Layer)
+        reluLayer.connect(convLayer2)
         poolLayer.connect(reluLayer)
         convLayer.connect(poolLayer)
         self.inputLayer.connect(convLayer)
@@ -74,8 +79,6 @@ class ConvolutionalNetwork:
         asserts = 0
         for index in range(numImages):
             output = self.guess(images[index,:,:,:])
-            if (np.argmax(output)== classes[index]):
-                asserts +=1
         print(asserts)
         return float(float(asserts)/float(numImages))
 

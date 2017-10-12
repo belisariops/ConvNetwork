@@ -34,9 +34,6 @@ class FlattenLayer(AbstractNeuralLayer):
             self.deltas.append(np.zeros((inputHeight,inputWidth)))
         if (not self.isBuilded):
             self.buildNeurons(len(self.myInput))
-        for neuron in self.neuron_array:
-            if len(neuron.weights) > 1:
-                print("aaaaaaaaaaaa")
         self.outputs = []
         for index,neuron in enumerate(self.neuron_array):
             neuron.setInputsList(self.myInput[index])
@@ -46,10 +43,19 @@ class FlattenLayer(AbstractNeuralLayer):
 
     def backPropagation(self,expected_output):
         self.calculateDelta(expected_output)
-        self.deltas = np.zeros(len(self.neuron_array))
+        self.deltas = []
+        size = self.thisShape[0]*self.thisShape[1]
+        self.kernel = []
+        aux_deltas = np.zeros(size)
         for index,neuron in enumerate(self.neuron_array):
-            self.deltas[index] = neuron.delta
-        self.previousLayer.deltas = np.reshape(self.deltas,self.thisShape)
+            aux_deltas[index % size] = neuron.delta
+            if (index + 1) % size == 0:
+                local_shape = (self.thisShape[0],self.thisShape[1])
+                self.deltas.append(np.reshape(aux_deltas,local_shape))
+                aux_deltas = np.zeros(size)
+
+
+        self.previousLayer.deltas = self.deltas
         self.previousLayer.backPropagation()
 
     def applyPropagationChanges(self,inputs):

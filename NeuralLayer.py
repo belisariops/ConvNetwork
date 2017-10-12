@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from scipy import exp
 
 class NeuralLayer(ABC):
     def __init__(self):
@@ -27,3 +28,6 @@ class NeuralLayer(ABC):
     def connect(self,layer):
         self.nextLayer = layer
         layer.previousLayer = self
+
+    def sigmoid(self,x):
+        return (1.0 / (1.0 + exp(-x)))

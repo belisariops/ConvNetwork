@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import signal
+from scipy import signal, exp
 from scipy import misc
 import matplotlib.pyplot as plt
 #
@@ -10,7 +10,8 @@ from CifarDataLoader import CifarDataLoader
 
 # g = np.array([[[0,0],[-1,3]],[[2,1],[2,-2]],[[-1,2],[-3,4]]])
 # # g[0][0] = [1,2]
-# b = np.array([[1,1],[1,1]])
+b = np.array([[1,1],[1,1]])
+a = []
 # print(np.reshape(g.flatten(),(3,2,2)))
 # print(g)
 # i,j = np.unravel_index(a.argmax(), a.shape)
@@ -25,6 +26,10 @@ from ConvolutionalNetwork import ConvolutionalNetwork
 # a = np.zeros(shape= (4,4,30))
 # a[0,0,29] = 1
 # print(a[3][3][:])
+a = np.zeros((2,2))
+
+
+
 net = ConvolutionalNetwork(10)
 net.buildNetwork()
 # face = misc.imread('00001.tif')
@@ -36,7 +41,7 @@ net.buildNetwork()
 # names = data_loader.load_class_names()
 # x = 13
 # print(names[classes[x]])
-net.train(2)
+net.train(3)
 net.plot_results()
 #
 # data = unpickle('cifar-10-batches-py/data_batch_1')

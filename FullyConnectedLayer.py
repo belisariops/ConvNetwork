@@ -2,19 +2,20 @@ from AbstractNeuralLayer import AbstractNeuralLayer
 import numpy as np
 
 class FullyConnectedLayer(AbstractNeuralLayer):
-    def __init__(self):
+    def __init__(self,num_neurons):
         super().__init__()
         self.isBuilded = False
+        self.num_neurons = num_neurons
 
-    def buildNeurons(self,numNeurons):
+    def buildNeurons(self,numNeurons,num_weights):
         self.buildRandomLayer(numNeurons)
         self.setLearningRate(0.01)
         self.isBuilded = True
-        self.setRandomWeights(numNeurons,-3,3)
+        self.setRandomWeights(num_weights,-3,3)
 
     def forwardPropagation(self,input):
         if (not self.isBuilded):
-            self.buildNeurons(len(input))
+            self.buildNeurons(self.num_neurons,len(input))
         self.outputs = []
         for neuron in self.neuron_array:
             neuron.setInputsList(input)

@@ -7,18 +7,16 @@ class OutputLayer(AbstractNeuralLayer):
         super().__init__()
         self.initializeWeights = False
         self.buildRandomLayer(outputClasses)
-        self.setLearningRate(0.01)
+        self.setLearningRate(0.05)
 
     def backPropagation(self, expected_output):
-        index = 0
-        for neuron in self.neuron_array:
-            error = expected_output[index] - neuron.output
-            neuron.delta = error * self.transferDerivative(neuron.output)
-            index += 1
+        for index in range(len(self.neuron_array)):
+            error = expected_output[index] - self.neuron_array[index].output
+            self.neuron_array[index].delta = error * self.transferDerivative(self.neuron_array[index].output)
         self.previous_layer.backPropagation(expected_output)
 
     def setWeights(self,numWeights):
-        self.setRandomWeights(numWeights,-2,2)
+        self.setRandomWeights(numWeights,-1,2)
         self.initializeWeights = True
 
     def forwardPropagation(self, inputs):
@@ -27,6 +25,7 @@ class OutputLayer(AbstractNeuralLayer):
 
         self.outputs = []
         for neuron in self.neuron_array:
+            neuron.setInputsList(inputs)
             neuron.output = neuron.getOutput(inputs)
             self.outputs.append(neuron.output)
 

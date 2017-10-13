@@ -8,7 +8,8 @@ class ConvolutionalLayer(NeuralLayer):
     def __init__(self,kernelSize,numKernels):
         super().__init__()
         for i in range(numKernels):
-            self.kernels.append(np.random.random((kernelSize,kernelSize))*4 - 1)
+            x =np.random.random((kernelSize,kernelSize))*2 -1
+            self.kernels.append(x)
 
 
     def forwardPropagation(self,inputs):
@@ -29,10 +30,7 @@ class ConvolutionalLayer(NeuralLayer):
             self.deltas.append(np.zeros((resultHeight,resultWidth)))
             self.outputFeatureMap[:,:,index] = np.zeros((resultHeight,resultWidth))
             for channel in range(channels):
-                if channels!= 1:
-                    self.outputFeatureMap[:,:,index] = np.add(self.outputFeatureMap[:,:,index],(signal.convolve2d(inputs[:,:,channel],np.rot90(kernel,2), 'valid')))
-                else:
-                    self.outputFeatureMap[:,:,index] = (signal.convolve2d(inputs,np.rot90(kernel,2), 'valid'))
+                self.outputFeatureMap[:,:,index] = np.add(self.outputFeatureMap[:,:,index],(signal.convolve2d(inputs[:,:,channel],np.rot90(kernel,2), 'valid')))
         self.nextLayer.forwardPropagation(self.outputFeatureMap)
 
     def updateWeights(self,inputs):
@@ -41,9 +39,16 @@ class ConvolutionalLayer(NeuralLayer):
             channels = inputs.shape[2]
         except IndexError:
             channels = 1
+        count = 0
         for index,delta in enumerate(self.deltas):
             for channel in range(channels):
+                akernel = np.copy(self.kernels[index])
+                a = signal.convolve2d(inputs[:,:,channel],np.rot90(delta,2),'valid')
+                if np.array_equal(a, np.zeros(shape=a.shape)):
+                    count +=1
                 self.kernels[index] = np.add(self.kernels[index],signal.convolve2d(inputs[:,:,channel],np.rot90(delta,2),'valid'))
+        # if count == (len(self.deltas)*channels):
+        #     print("aaaaaaaaaaaaaaaaaaaaaaa")
 
 
     def backPropagation(self):

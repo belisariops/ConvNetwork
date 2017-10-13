@@ -37,13 +37,12 @@ net.buildNetwork()
 # names = data_loader.load_class_names()
 # x = 13
 # print(names[classes[x]])
-net.train(3)
+net.train(10)
 net.plot_results()
-#
 # data = unpickle('cifar-10-batches-py/data_batch_1')
 # raw_images = data[b'data']
 # classes = np.array(data[b'labels'])
 # images = _convert_images(raw_images,3,32)
-# plt.imshow(images[x,:,:,:])
+# plt.imshow(mnist[1,:,:,:])
 # plt.show()
 

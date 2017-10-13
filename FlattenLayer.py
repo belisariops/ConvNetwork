@@ -14,9 +14,9 @@ class FlattenLayer(AbstractNeuralLayer):
 
     def buildNeurons(self,numNeurons):
         self.buildRandomLayer(numNeurons)
-        # self.setLearningRate(0.01)
+        self.setLearningRate(0.05)
         self.isBuilded = True
-        self.setRandomWeights(1,-2,2)
+        self.setRandomWeights(1,1,3)
 
     def forwardPropagation(self,input):
         self.thisShape = input.shape
@@ -53,7 +53,6 @@ class FlattenLayer(AbstractNeuralLayer):
                 local_shape = (self.thisShape[0],self.thisShape[1])
                 self.deltas.append(np.reshape(aux_deltas,local_shape))
                 aux_deltas = np.zeros(size)
-
 
         self.previousLayer.deltas = self.deltas
         self.previousLayer.backPropagation()

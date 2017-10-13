@@ -10,6 +10,7 @@ from numpy import linalg as LA
 import numpy as np
 import matplotlib.pylab as plt
 
+
 class ConvolutionalNetwork:
     def __init__(self,numClasses):
         self.inputLayer = None
@@ -24,15 +25,15 @@ class ConvolutionalNetwork:
 
     def buildNetwork(self):
         self.inputLayer = InputLayer()
-        convLayer = ConvolutionalLayer(2,10)
+        convLayer = ConvolutionalLayer(5,10)
         poolLayer = PoolingLayer(4)
         reluLayer = ReluLayer()
-        convLayer2 = ConvolutionalLayer(4,5)
+        convLayer2 = ConvolutionalLayer(4,20)
         pool2Layer = PoolingLayer(2)
         flattenLayer = FlattenLayer()
         reluLayer2 = ReluLayer()
         fullLayer = FullyConnectedLayer(20)
-        self.outputLayer = OutputLayer(10)
+        self.outputLayer = OutputLayer(self.numOutputs)
         fullLayer.connect(self.outputLayer)
         flattenLayer.connect(fullLayer)
         reluLayer2.connect(flattenLayer)
@@ -60,8 +61,12 @@ class ConvolutionalNetwork:
         self.error_plotY = []
         for i in range(numEpochs):
             self.error = 0
-            print("Epoch {0}: training".format(i))
-            for index in range(numImages):
+            print("Epoch {0}: training".format(i+1))
+            for index in range(2000):
+                if index % 100 == 0:
+                    print(index)
+                if classes[index] != 0 and classes[index] != 3:
+                    continue
                 expected_output = np.zeros(10)
                 output = self.guess(images[index,:,:,:])
                 expected_output[classes[index]] = 1
@@ -69,7 +74,7 @@ class ConvolutionalNetwork:
                 self.error += (np.power(LA.norm(np.subtract(expected_output, output)), 2)/numImages)
             self.error_plotX.append(i)
             self.error_plotY.append(self.error)
-            print("Epoch {0}: test".format(i))
+            print("Epoch {0}: test".format(i+1))
             ratio = self.test_data(training_images,training_classes,classes_names)
             self.precisionX.append(i)
             self.precisionY.append(ratio)
@@ -79,11 +84,15 @@ class ConvolutionalNetwork:
     def test_data(self,images,classes ,classes_names):
         numImages = images.shape[0]
         asserts = 0
-        for index in range(numImages):
+        total = 0
+        for index in range(1000):
+            if classes[index] != 0 and classes[index] != 3:
+                continue
+            total +=1
             output = self.guess(images[index,:,:,:])
             if np.argmax(output) == classes[index]:
                 asserts += 1
-        print(asserts)
+        print(asserts,total)
         return float(float(asserts)/float(numImages))
 
     def plot_results(self):

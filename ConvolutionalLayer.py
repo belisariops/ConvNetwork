@@ -4,7 +4,13 @@ from scipy import signal
 from NeuralLayer import NeuralLayer
 
 
+
 class ConvolutionalLayer(NeuralLayer):
+    """
+    Convolutional layer has an array of matrices representing the
+    kernels (or filters) when the imput passes thorugh it it apply
+    convolution to the input with this kernels.
+    """
     def __init__(self,kernelSize,numKernels):
         super().__init__()
         for i in range(numKernels):

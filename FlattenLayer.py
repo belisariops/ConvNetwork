@@ -4,6 +4,10 @@ import numpy as np
 
 class FlattenLayer(AbstractNeuralLayer):
     def __init__(self):
+        """
+        Converts the input matrix into a one dimensional array so the
+        multiperceptron code could be used.
+        """
         super().__init__()
         self.isBuilded = False
         self.thisShape = None

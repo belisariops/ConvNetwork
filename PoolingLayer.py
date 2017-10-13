@@ -2,6 +2,10 @@ from NeuralLayer import NeuralLayer
 import numpy as np
 
 class PoolingLayer(NeuralLayer):
+    """
+    Max pooling layer, get the max value of the input with
+    a window size, reducing the input .
+    """
     def __init__(self,windowSize):
         super().__init__()
         self.windowSize = windowSize

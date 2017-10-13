@@ -1,3 +1,17 @@
+########################################################################
+#
+# Tarea 2 CC5114-1 Redes Neuronales y Programación Genética 2017, Primavera
+#
+# https://github.com/Hvass-Labs/TensorFlow-Tutorials
+#
+#https://github.com/belisariops/ConvNetwork
+#
+# Belisario Panay Schweizer
+#
+########################################################################
+
+
+
 from CifarDataLoader import CifarDataLoader
 from ConvolutionalLayer import ConvolutionalLayer
 from FlattenLayer import FlattenLayer
@@ -24,6 +38,10 @@ class ConvolutionalNetwork:
         self.precisionY = []
 
     def buildNetwork(self):
+        """
+        Builds the neural network with a fixed structure,
+        and a variable number of outputs.
+        """
         self.inputLayer = InputLayer()
         convLayer = ConvolutionalLayer(5,10)
         poolLayer = PoolingLayer(4)
@@ -45,13 +63,24 @@ class ConvolutionalNetwork:
         self.inputLayer.connect(convLayer)
 
     def guess(self,input):
+        """
+        Receive an image and returns the guess of
+        the network to that images.
+        """
         self.inputLayer.forwardPropagation(input)
         return self.outputLayer.getOutput()
 
     def backPropagate(self,expected_output):
+        """
+        Starts the propagation through the network.
+        """
         self.outputLayer.backPropagation(expected_output)
 
     def train(self, numEpochs):
+        """
+        Trains the net under de CIFAR-10 dataset, width a cerrtain
+        numbber of epochs.
+        """
         file = open('results.txt', 'w')
         images, classes = self.dataLoader.load_training_data()
         numImages = images.shape[0]
@@ -82,6 +111,9 @@ class ConvolutionalNetwork:
         file.close()
 
     def test_data(self,images,classes ,classes_names):
+        """
+        Test the precision of the network.
+        """
         numImages = images.shape[0]
         asserts = 0
         total = 0
@@ -96,6 +128,9 @@ class ConvolutionalNetwork:
         return float(float(asserts)/float(numImages))
 
     def plot_results(self):
+        """
+        Plots the precision and error of the network.
+        """
         plt.figure()
         plt.title("Precision", fontsize=20)
         plt.xlabel('epochs')

@@ -3,6 +3,9 @@ import numpy as np
 
 import numpy as np
 class ReluLayer(NeuralLayer):
+    """
+    All the negative values given to this layer become cero.
+    """
     def forwardPropagation(self,input):
         # Revisar caso en que la imagen es de un canal (blanco y negro)
         input_heigth, input_width,channels = input.shape
